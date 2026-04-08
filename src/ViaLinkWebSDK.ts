@@ -111,13 +111,13 @@ export class ViaLinkWebSDK {
       const parsed = new URL(url);
       const params = parsed.searchParams;
 
-      // /c/{shortCode} 경로 패턴
+      // /{slug}/{shortCode} 경로 패턴
       const segments = parsed.pathname.split('/').filter(Boolean);
-      if (segments.length >= 2 && segments[0] === 'c') {
+      if (segments.length >= 2) {
         return {
           path: '/',
           params: Object.fromEntries(params.entries()),
-          shortCode: segments[1],
+          shortCode: segments[segments.length - 1],
         };
       }
 
