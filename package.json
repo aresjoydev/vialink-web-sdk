@@ -1,0 +1,43 @@
+{
+  "name": "vialink-web-sdk",
+  "version": "1.3.0",
+  "description": "ViaLink 딥링크 Web SDK",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "prepublishOnly": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@bitbucket.org/aresjoyinc/vialink-web-sdk.git"
+  },
+  "keywords": [
+    "deeplink",
+    "web-sdk",
+    "smart-banner",
+    "analytics",
+    "vialink"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "terser": "^5.46.1",
+    "tsup": "^8.5.1",
+    "typescript": "^5.7.0",
+    "vitest": "^4.1.2"
+  }
+}
