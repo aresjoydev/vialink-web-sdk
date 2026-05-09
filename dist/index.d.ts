@@ -105,6 +105,7 @@ interface CreateLinkExtraOptions {
 declare class ViaLinkWebSDK {
     private static readonly API_BASE_URL;
     private static instance;
+    static get shared(): ViaLinkWebSDK;
     private client;
     private tracker;
     private banner;
@@ -113,10 +114,11 @@ declare class ViaLinkWebSDK {
     private constructor();
     static init(config: ViaLinkConfig): ViaLinkWebSDK;
     getDeepLinkData(): DeepLinkData | null;
-    onDeepLink(callback: (data: DeepLinkData | null) => void): void;
     static parseDeepLinkFromURL(url: string): DeepLinkData | null;
     track(eventName: string, data?: Record<string, unknown>): void;
+    static track(eventName: string, data?: Record<string, unknown>): void;
     flush(): Promise<void>;
+    static flush(): Promise<void>;
     resolveLink(urlOrCode: string): Promise<DeepLinkData | null>;
     /**
      * 딥링크 생성
