@@ -17,12 +17,7 @@ export class NetworkClient {
       });
       if (!response.ok) {
         const errBody = await response.text().catch(() => '');
-        const err = new Error(this.formatHttpError(response.status, errBody));
-        // 4xx는 재시도 불가 — 즉시 throw
-        if (response.status >= 400 && response.status < 500) {
-          (err as any).__noRetry = true;
-        }
-        throw err;
+        throw new Error(this.formatHttpError(response.status, errBody));
       }
       return response.text();
     });
@@ -37,11 +32,7 @@ export class NetworkClient {
       });
       if (!response.ok) {
         const errBody = await response.text().catch(() => '');
-        const err = new Error(this.formatHttpError(response.status, errBody));
-        if (response.status >= 400 && response.status < 500) {
-          (err as any).__noRetry = true;
-        }
-        throw err;
+        throw new Error(this.formatHttpError(response.status, errBody));
       }
       return response.text();
     });
@@ -54,11 +45,9 @@ export class NetworkClient {
   }
 
   /// navigator.sendBeacon 기반 전송 (페이지 이탈 시에도 전송 보장)
-  /// sendBeacon은 커스텀 헤더를 지원하지 않으므로 API Key를 요청 body에 포함시킨다.
   sendBeacon(path: string, body: Record<string, unknown>): boolean {
     if (typeof navigator === 'undefined' || !navigator.sendBeacon) return false;
-    const payload = { ...body, _api_key: this.apiKey };
-    const blob = new Blob([JSON.stringify(payload)], { type: 'application/json' });
+    const blob = new Blob([JSON.stringify(body)], { type: 'application/json' });
     return navigator.sendBeacon(`${this.baseURL}${path}`, blob);
   }
 
@@ -97,9 +86,9 @@ export class NetworkClient {
     if (options?.tags !== undefined) body['tags'] = options.tags;
     if (options?.expiresAt !== undefined) body['expiresAt'] = options.expiresAt;
 
-    const response = await this.post('/v1/links', body);
-    const json = JSON.parse(response) as { short_url: string };
-    return json.short_url;
+    const response = await this.post('/api/links', body);
+    const json = JSON.parse(response) as { shortUrl: string };
+    return json.shortUrl;
   }
 
   private buildHeaders(): Record<string, string> {
@@ -117,8 +106,6 @@ export class NetworkClient {
         return await block();
       } catch (e) {
         lastError = e instanceof Error ? e : new Error(String(e));
-        // 4xx 에러는 재시도 불가 — 즉시 throw
-        if ((e as any)?.__noRetry) throw lastError;
         if (attempt < this.maxRetries - 1) {
           await new Promise((r) => setTimeout(r, Math.pow(2, attempt) * 1000));
         }

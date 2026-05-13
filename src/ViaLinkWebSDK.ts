@@ -16,7 +16,7 @@ import { BannerManager } from './BannerManager';
 const ORDER_ID_REGEX = /^[A-Za-z0-9_\-]{1,100}$/;
 
 /// SDK 버전 (package.json과 동기화)
-const SDK_VERSION = '3.0.1';
+const SDK_VERSION = '3.0.0';
 
 /// 디퍼드 딥링크 콜백 데드라인 (5초)
 /// 데드라인 안에 매칭 결과가 결정되지 않으면 콜백/Promise는 `error.code === 'timeout'`으로 1회 호출되고,
@@ -56,14 +56,6 @@ export class ViaLinkWebSDK {
   private static readonly API_BASE_URL = 'https://vialink.app';
 
   private static instance: ViaLinkWebSDK | null = null;
-
-  /// 초기화된 SDK 인스턴스에 접근 (init() 호출 후 사용)
-  static get shared(): ViaLinkWebSDK {
-    if (!ViaLinkWebSDK.instance) {
-      throw new Error('ViaLinkWebSDK is not initialized. Call ViaLinkWebSDK.init() first.');
-    }
-    return ViaLinkWebSDK.instance;
-  }
 
   private client: NetworkClient;
   private tracker: EventTracker;
@@ -143,25 +135,19 @@ export class ViaLinkWebSDK {
   }
 
   /// URL에서 딥링크 파라미터 추출 (정적 메서드)
-  /// 패턴 1: /{slug}/{shortCode} (2세그먼트, shortCode는 3~12자 영숫자)
-  /// 패턴 2: ?vialink_code= 또는 ?vialink_path= 쿼리 파라미터
   static parseDeepLinkFromURL(url: string): DeepLinkData | null {
     try {
       const parsed = new URL(url);
       const params = parsed.searchParams;
 
-      // /{slug}/{shortCode} 경로 패턴 — shortCode는 3~12자 Base62 문자열
+      // /{slug}/{shortCode} 경로 패턴
       const segments = parsed.pathname.split('/').filter(Boolean);
-      if (segments.length === 2) {
-        const shortCode = segments[1]!;
-        // shortCode 형식 검증: 영문/숫자 3~12자
-        if (/^[A-Za-z0-9]{3,12}$/.test(shortCode)) {
-          return {
-            path: '/',
-            params: Object.fromEntries(params.entries()),
-            shortCode,
-          };
-        }
+      if (segments.length >= 2) {
+        return {
+          path: '/',
+          params: Object.fromEntries(params.entries()),
+          shortCode: segments[segments.length - 1],
+        };
       }
 
       // ?vialink_code= 쿼리 파라미터 패턴
@@ -187,24 +173,14 @@ export class ViaLinkWebSDK {
     }
   }
 
-  /// 커스텀 이벤트 추적 (인스턴스 메서드)
+  /// 커스텀 이벤트 추적
   track(eventName: string, data?: Record<string, unknown>): void {
     this.tracker.track(eventName, data);
   }
 
-  /// 커스텀 이벤트 추적 (정적 메서드 — init() 후 어디서든 호출 가능)
-  static track(eventName: string, data?: Record<string, unknown>): void {
-    ViaLinkWebSDK.shared.track(eventName, data);
-  }
-
-  /// 이벤트 즉시 전송 (인스턴스)
+  /// 이벤트 즉시 전송
   async flush(): Promise<void> {
     await this.tracker.flush();
-  }
-
-  /// 이벤트 즉시 전송 (정적)
-  static async flush(): Promise<void> {
-    await ViaLinkWebSDK.shared.flush();
   }
 
   /// short code로 서버에서 딥링크 데이터 조회
