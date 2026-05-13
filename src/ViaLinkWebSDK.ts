@@ -16,7 +16,7 @@ import { BannerManager } from './BannerManager';
 const ORDER_ID_REGEX = /^[A-Za-z0-9_\-]{1,100}$/;
 
 /// SDK 버전 (package.json과 동기화)
-const SDK_VERSION = '3.0.0';
+const SDK_VERSION = '3.1.2';
 
 /// 디퍼드 딥링크 콜백 데드라인 (5초)
 /// 데드라인 안에 매칭 결과가 결정되지 않으면 콜백/Promise는 `error.code === 'timeout'`으로 1회 호출되고,
@@ -106,7 +106,7 @@ export class ViaLinkWebSDK {
       }
     }
 
-    // 클릭 ID 추적 (URL에서 vialink 파라미터 확인)
+    // 클릭 ID 추적 (URL에서 vialink 파라미터 확인) — 어트리뷰션용, 딥링크 진입 시에만 1회 전송
     const deepLinkData = sdk.getDeepLinkData();
     if (deepLinkData) {
       sdk.track('web.deeplink', {
@@ -114,11 +114,6 @@ export class ViaLinkWebSDK {
         path: deepLinkData.path,
       });
     }
-
-    sdk.track('web.pageview', {
-      url: typeof window !== 'undefined' ? window.location.href : '',
-      referrer: typeof document !== 'undefined' ? document.referrer : '',
-    });
 
     // SDK 버전 체크 (비동기, 실패해도 무시)
     sdk.checkForUpdate().catch(() => {});

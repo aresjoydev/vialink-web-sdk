@@ -1,6 +1,6 @@
 {
   "name": "vialink-web-sdk",
-  "version": "3.1.1",
+  "version": "3.1.2",
   "description": "ViaLink 딥링크 Web SDK",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
