@@ -10,7 +10,7 @@ export interface DeepLinkData {
   path: string;
   params: Record<string, string>;
   shortCode?: string;
-  /// 어트리뷰션용 numeric link id (서버 /v1/open, /v1/resolve 응답의 link_id)
+  /// 어트리뷰션용 numeric link id (서버 /v1/deferred-match, /v1/resolve 응답의 link_id)
   /// SDK가 보관해 후속 결제 시도 등에 자동 첨부한다.
   linkId?: number;
 }
@@ -36,7 +36,7 @@ export interface BannerOptions {
   theme?: 'light' | 'dark';
 }
 
-/// 디퍼드 딥링크 매칭 결과 (POST /v1/open 응답 raw 페이로드)
+/// 디퍼드 딥링크 매칭 결과 (POST /v1/deferred-match 응답 raw 페이로드)
 export interface DeferredMatchResult {
   matched: boolean;
   deeplink_path?: string;

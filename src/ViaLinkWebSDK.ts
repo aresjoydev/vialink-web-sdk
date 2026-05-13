@@ -16,7 +16,7 @@ import { BannerManager } from './BannerManager';
 const ORDER_ID_REGEX = /^[A-Za-z0-9_\-]{1,100}$/;
 
 /// SDK 버전 (package.json과 동기화)
-const SDK_VERSION = '3.1.2';
+const SDK_VERSION = '3.1.3';
 
 /// 디퍼드 딥링크 콜백 데드라인 (5초)
 /// 데드라인 안에 매칭 결과가 결정되지 않으면 콜백/Promise는 `error.code === 'timeout'`으로 1회 호출되고,
@@ -106,14 +106,7 @@ export class ViaLinkWebSDK {
       }
     }
 
-    // 클릭 ID 추적 (URL에서 vialink 파라미터 확인) — 어트리뷰션용, 딥링크 진입 시에만 1회 전송
-    const deepLinkData = sdk.getDeepLinkData();
-    if (deepLinkData) {
-      sdk.track('web.deeplink', {
-        short_code: deepLinkData.shortCode ?? '',
-        path: deepLinkData.path,
-      });
-    }
+    // 자동 이벤트(web.deeplink/web.pageview) 전송 안 함 — 사용자가 명시적으로 track() 호출 시에만 전송.
 
     // SDK 버전 체크 (비동기, 실패해도 무시)
     sdk.checkForUpdate().catch(() => {});
@@ -332,7 +325,7 @@ export class ViaLinkWebSDK {
     };
   }
 
-  /// 디퍼드 딥링크 매칭 (POST /v1/open) — SDK 3.0+: `{data, error}` 형태로 결과 반환.
+  /// 디퍼드 딥링크 매칭 (POST /v1/deferred-match) — SDK 3.0+: `{data, error}` 형태로 결과 반환.
   /// 앱 첫 실행 시 서버에서 매칭을 시도합니다.
   /// fp 파라미터가 있으면 100% 정확한 직접 매칭, 없으면 핑거프린트 기반 매칭.
   ///
@@ -354,7 +347,7 @@ export class ViaLinkWebSDK {
       };
       if (fp) body['fp'] = fp;
 
-      const response = await this.client.post('/v1/open', body);
+      const response = await this.client.post('/v1/deferred-match', body);
 
       let json: DeferredMatchResult;
       try {
