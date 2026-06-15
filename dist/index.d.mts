@@ -42,13 +42,15 @@ interface DeferredMatchResult {
  *   - `'timeout'`: 5초 데드라인 만료
  *   - `'network'`: fetch 실패 (3회 재시도 모두 실패)
  *   - `'server_error'`: HTTP 5xx (3회 재시도 모두 실패)
+ *   - `'client_error'`: HTTP 4xx (429 할당량 초과 포함) — 재시도 불가, 즉시 실패
  *   - `'invalid_response'`: 응답 JSON 파싱 실패
  *   - `'unknown'`: 그 외 모든 예외
  * - `retryable`이 true면 다음 페이지 로드 시 사용자가 다시 시도해도 무방.
  *   (단, Web SDK는 mobile과 달리 자동 재시도하지 않음 — 사용자가 명시적으로 다시 호출해야 한다.)
+ *   `client_error`(4xx)는 재시도해도 결과가 같으므로 `retryable`이 false다.
  */
 interface DeferredError {
-    code: 'timeout' | 'network' | 'server_error' | 'invalid_response' | 'unknown';
+    code: 'timeout' | 'network' | 'server_error' | 'client_error' | 'invalid_response' | 'unknown';
     message: string;
     httpStatus?: number;
     retryable: boolean;

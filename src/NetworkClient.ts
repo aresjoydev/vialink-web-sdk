@@ -106,6 +106,12 @@ export class NetworkClient {
         return await block();
       } catch (e) {
         lastError = e instanceof Error ? e : new Error(String(e));
+        // 4xx(429 포함)는 재시도해도 결과가 같으므로 즉시 탈출 — 할당량 초과 증폭 방지.
+        const statusMatch = /^HTTP (\d+)/.exec(lastError.message);
+        if (statusMatch) {
+          const status = Number(statusMatch[1]);
+          if (status >= 400 && status <= 499) throw lastError;
+        }
         if (attempt < this.maxRetries - 1) {
           await new Promise((r) => setTimeout(r, Math.pow(2, attempt) * 1000));
         }

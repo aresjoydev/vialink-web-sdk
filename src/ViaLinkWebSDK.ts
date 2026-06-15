@@ -16,7 +16,7 @@ import { BannerManager } from './BannerManager';
 const ORDER_ID_REGEX = /^[A-Za-z0-9_\-]{1,100}$/;
 
 /// SDK 버전 (package.json과 동기화)
-const SDK_VERSION = '3.1.3';
+const SDK_VERSION = '3.1.4';
 
 /// 디퍼드 딥링크 콜백 데드라인 (5초)
 /// 데드라인 안에 매칭 결과가 결정되지 않으면 콜백/Promise는 `error.code === 'timeout'`으로 1회 호출되고,
@@ -383,16 +383,24 @@ export class ViaLinkWebSDK {
     } catch (e) {
       // NetworkClient는 비-2xx와 fetch 실패를 모두 Error로 throw — message 패턴으로 5xx와 network 구분.
       const message = e instanceof Error ? e.message : String(e);
-      const httpMatch = /^HTTP (\d+):/.exec(message);
+      const httpMatch = /^HTTP (\d+)/.exec(message);
       let httpStatus: number | undefined;
       let code: DeferredError['code'] = 'network';
+      // 4xx(429 할당량 초과 포함)는 재시도해도 결과가 같으므로 client_error로 즉시 실패(retryable=false).
+      // 5xx·network는 일시적일 수 있어 retryable=true 유지(Web은 개발자가 직접 재호출).
+      let retryable = true;
       if (httpMatch) {
         httpStatus = Number(httpMatch[1]);
-        if (httpStatus >= 500 && httpStatus <= 599) code = 'server_error';
+        if (httpStatus >= 500 && httpStatus <= 599) {
+          code = 'server_error';
+        } else if (httpStatus >= 400 && httpStatus <= 499) {
+          code = 'client_error';
+          retryable = false;
+        }
       }
       return {
         data: null,
-        error: { code, message, httpStatus, retryable: true },
+        error: { code, message, httpStatus, retryable },
       };
     }
   }
