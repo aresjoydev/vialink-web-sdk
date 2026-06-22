@@ -16,7 +16,7 @@ import { BannerManager } from './BannerManager';
 const ORDER_ID_REGEX = /^[A-Za-z0-9_\-]{1,100}$/;
 
 /// SDK 버전 (package.json과 동기화)
-const SDK_VERSION = '3.1.4';
+const SDK_VERSION = '3.1.5';
 
 /// 디퍼드 딥링크 콜백 데드라인 (5초)
 /// 데드라인 안에 매칭 결과가 결정되지 않으면 콜백/Promise는 `error.code === 'timeout'`으로 1회 호출되고,
