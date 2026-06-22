@@ -1,49 +1,49 @@
 # ViaLink Web SDK
 
-**English** | [한국어](README.ko.md)
+[English](README.md) | **한국어**
 
-Web SDK for the ViaLink deep link infrastructure service.
+ViaLink 딥링크 인프라 서비스를 위한 Web SDK입니다.
 
-## Requirements
+## 요구사항
 
 - Chrome 80+, Safari 14+, Firefox 78+
 
-## Installation
+## 설치
 
 ```bash
 npm install vialink-web-sdk
 ```
 
-## Usage
+## 사용법
 
 ```typescript
 import { ViaLinkWebSDK } from 'vialink-web-sdk';
 
-// Initialize
+// 초기화
 const sdk = ViaLinkWebSDK.init({ apiKey: 'YOUR_API_KEY' });
 
-// Extract deep link data
+// 딥링크 데이터 추출
 const data = sdk.getDeepLinkData();
 if (data) {
-  console.log('path:', data.path);
-  console.log('params:', data.params);
+  console.log('경로:', data.path);
+  console.log('파라미터:', data.params);
 }
 
-// Event tracking
+// 이벤트 추적
 sdk.track('purchase', { product_id: '12345', revenue: 29900 });
 
-// Create a link
+// 링크 생성
 const shortUrl = await sdk.createLink('/product/12345', { promo_code: 'FRIEND_SHARE' }, 'referral');
 
-// Smart app banner
+// 스마트 앱 배너
 sdk.showBanner({
-  title: 'Open in app',
-  buttonText: 'Open',
+  title: '앱에서 보기',
+  buttonText: '열기',
   iosStoreUrl: 'https://apps.apple.com/app/id123456',
   androidStoreUrl: 'https://play.google.com/store/apps/...',
 });
 ```
 
-## Documentation
+## 문서
 
-- [SDK Guide](https://docs.vialink.app)
+- [SDK 가이드](https://docs.vialink.app)
