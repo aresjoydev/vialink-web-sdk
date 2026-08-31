@@ -1,8 +1,21 @@
 # ViaLink Web SDK
 
+[![ViaLink — Deep links for 6 platforms. Start free.](docs/banner-en.png)](https://vialink.app)
+
 **English** | [한국어](README.ko.md)
 
 Web SDK for the ViaLink deep link infrastructure service.
+
+Connects a click on the web all the way through to app install and launch. Link creation,
+deep link parameter extraction, the smart app banner, and event tracking run in the
+browser, and the mobile SDK picks up the first launch after install under the same
+campaign.
+
+Unlike most deep link and attribution tools, which require a sales call and an annual
+contract, **ViaLink is free to start.** No credit card — all six platform SDKs are
+available the moment you sign up.
+
+**→ [vialink.app](https://vialink.app)**
 
 ## Requirements
 
