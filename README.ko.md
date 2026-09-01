@@ -57,4 +57,4 @@ sdk.showBanner({
 
 ## 문서
 
-- [SDK 가이드](https://docs.vialink.app)
+- [SDK 가이드](https://docs.vialink.app/#sdk-web-install)

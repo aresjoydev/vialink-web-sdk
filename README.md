@@ -59,4 +59,4 @@ sdk.showBanner({
 
 ## Documentation
 
-- [SDK Guide](https://docs.vialink.app)
+- [SDK Guide](https://docs.vialink.app/#sdk-web-install)
