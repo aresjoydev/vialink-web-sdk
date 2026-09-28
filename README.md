@@ -72,3 +72,8 @@ sdk.showBanner({
 ## Documentation
 
 - [SDK Guide](https://docs.vialink.app/#sdk-web-install)
+
+## License
+
+Proprietary — © 2026 Aresjoy Inc. All rights reserved.
+Use is governed by the [ViaLink Terms of Service](https://vialink.app/terms). See [LICENSE](LICENSE).
