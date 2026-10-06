@@ -1,6 +1,6 @@
 {
   "name": "vialink-web-sdk",
-  "version": "3.1.5",
+  "version": "3.1.6",
   "description": "ViaLink 딥링크 Web SDK",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -22,9 +22,13 @@
     "test:watch": "vitest",
     "prepublishOnly": "npm run build"
   },
+  "homepage": "https://vialink.app/vialink/u5i6ft/vialink-web-sdk",
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@bitbucket.org/aresjoyinc/vialink-web-sdk.git"
+    "url": "git+https://github.com/aresjoydev/vialink-web-sdk.git"
+  },
+  "bugs": {
+    "url": "https://github.com/aresjoydev/vialink-web-sdk/issues"
   },
   "keywords": [
     "deeplink",
